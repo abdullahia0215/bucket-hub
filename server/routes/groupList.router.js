@@ -21,7 +21,7 @@ router.get("/groupList", (req, res) => {
       res.sendStatus(500);
     });
 });
-
+ 
 /**
  * Add a task to the group list
  */

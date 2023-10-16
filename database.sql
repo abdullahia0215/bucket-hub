@@ -19,3 +19,4 @@ CREATE TABLE "group_list" (
     "task" VARCHAR (255) NOT NULL,
     "complete" BOOLEAN DEFAULT FALSE
 );
+
