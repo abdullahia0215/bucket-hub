@@ -8,7 +8,7 @@ const {
 /**
  * Get all of the tasks in the group list
  */
-router.get("/", rejectUnauthenticated, (req, res) => {
+router.get("/groupList", (req, res) => {
   console.log("req.user:", req.user);
   pool
     .query(`SELECT * FROM "group_list";`)
