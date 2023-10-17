@@ -1,9 +1,6 @@
 const express = require("express");
 const pool = require("../modules/pool");
 const router = express.Router();
-const {
-  rejectUnauthenticated,
-} = require("../modules/authentication-middleware");
 
 /**
  * Get all of the tasks in the group list
@@ -25,7 +22,7 @@ router.get("/group", (req, res) => {
 /**
  * Add a task to the group list
  */
-router.post("/", rejectUnauthenticated, (req, res) => {
+router.post("/", (req, res) => {
   const task = req.body;
   console.log(`task: ${task}`);
   const queryText = `INSERT INTO "group_list" ("task", "complete")
@@ -44,7 +41,7 @@ router.post("/", rejectUnauthenticated, (req, res) => {
 /**
  * Mark a task as complete in the group list
  */
-router.put("/:id", rejectUnauthenticated, (req, res) => {
+router.put("/:id", (req, res) => {
   console.log(req.body)
   const task = req.body;
   const queryText = `UPDATE "group_list" SET "complete" = $1 WHERE "id" = $2`;
