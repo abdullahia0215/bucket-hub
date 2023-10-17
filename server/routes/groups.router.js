@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../modules/pool");
-const {
-  rejectUnauthenticated,
-} = require("../modules/authentication-middleware");
 
 // Create a new group
-router.post("/create", rejectUnauthenticated, (req, res) => {
+router.post("/create", (req, res) => {
   const group = req.body;
   const queryText = `INSERT INTO "groups" ("group_name", "creator_id")
     VALUES ($1, $2) RETURNING *`;
@@ -37,7 +34,7 @@ router.get("/", (req, res) => {
 });
 
 // Join a group
-router.post("/join", rejectUnauthenticated, (req, res) => {
+router.post("/join", (req, res) => {
   const group = req.body;
   const queryText = `INSERT INTO "user_groups" ("group_id", "user_id")
     VALUES ($1, $2) RETURNING *`;
@@ -54,7 +51,7 @@ router.post("/join", rejectUnauthenticated, (req, res) => {
 });
 
 // Leave a group
-router.post("/leave", rejectUnauthenticated, (req, res) => {
+router.post("/leave", (req, res) => {
   const group = req.body;
   const queryText = `DELETE FROM "user_groups"
     WHERE "group_id" = $1 AND "user_id" = $2`;
@@ -71,7 +68,7 @@ router.post("/leave", rejectUnauthenticated, (req, res) => {
 });
 
 // Delete a group
-router.delete("/:id", rejectUnauthenticated, (req, res) => {
+router.delete("/:id", (req, res) => {
   const groupId = req.params.id;
   const queryText = `DELETE FROM "groups" WHERE "id" = $1`;
   pool
