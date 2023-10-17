@@ -1,22 +1,34 @@
--- Existing user table
 CREATE TABLE "user" (
-    "id" SERIAL PRIMARY KEY,
-    "username" VARCHAR (80) UNIQUE NOT NULL,
-    "password" VARCHAR (1000) NOT NULL
+    id SERIAL PRIMARY KEY,
+    username VARCHAR,
+    password VARCHAR,
+    approved BOOLEAN
 );
 
--- My List table
-CREATE TABLE "my_list" (
-    "id" SERIAL PRIMARY KEY,
-    "user_id" INTEGER REFERENCES "user" ("id"),
-    "task" VARCHAR (255) NOT NULL,
-    "complete" BOOLEAN DEFAULT FALSE
+CREATE TABLE "groups" (
+    id SERIAL PRIMARY KEY,
+    group_name VARCHAR,
+    creator_id INTEGER REFERENCES "user"(id)
 );
 
--- Group List table
 CREATE TABLE "group_list" (
-    "id" SERIAL PRIMARY KEY,
-    "task" VARCHAR (255) NOT NULL,
-    "complete" BOOLEAN DEFAULT FALSE
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER REFERENCES "groups"(id),
+    user_id INTEGER REFERENCES "user"(id),
+    task VARCHAR,
+    complete BOOLEAN
 );
 
+CREATE TABLE "my_list" (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES "user"(id),
+    task VARCHAR,
+    complete BOOLEAN
+);
+
+CREATE TABLE "user_groups" (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER REFERENCES "groups"(id),
+    user_id INTEGER REFERENCES "user"(id),
+    admin BOOLEAN
+);
