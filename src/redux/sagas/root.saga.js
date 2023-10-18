@@ -1,25 +1,12 @@
-import { legacy_createStore as createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import logger from 'redux-logger';
+import { all } from 'redux-saga/effects';
+import groupSaga from './group.saga';
+import taskSaga from './task.saga';
+import userSaga from './user.saga';
 
-import rootReducer from './reducers/_root.reducer'; 
-import rootSaga from './sagas/_root.saga'; 
-
-const sagaMiddleware = createSagaMiddleware();
-
-
-const middlewareList = process.env.NODE_ENV === 'development' ?
-  [sagaMiddleware, logger] :
-  [sagaMiddleware];
-
-const store = createStore(
-
-  rootReducer,
-
-  applyMiddleware(...middlewareList),
-);
-
-
-sagaMiddleware.run(rootSaga);
-
-export default store;
+export default function* rootSaga() {
+    yield all([
+        groupSaga(),
+        taskSaga(),
+        userSaga()
+    ]);x
+}
