@@ -9,5 +9,5 @@ const rejectUnauthenticated = (req, res, next) => {
     res.sendStatus(403);
   }
 };
- 
+
 module.exports = { rejectUnauthenticated };

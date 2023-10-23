@@ -10,7 +10,7 @@ const encryptPassword = (password) => {
   // this salt and hash (and not the actual password) will then get stored in the database
   return bcrypt.hashSync(password, salt);
 };
- 
+
 const comparePassword = (candidatePassword, storedPassword) => {
   /*
   This takes in the candidate password (what the user entered) to check it.

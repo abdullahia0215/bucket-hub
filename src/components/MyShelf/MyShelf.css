@@ -1,0 +1,11 @@
+/* styles.css */
+.complete-button {
+    background-color: white; /* Default background color */
+    /* Add other button styles as needed */
+  }
+  
+  .complete-button.completed {
+    background-color: green; /* Completed task background color */
+    /* Add other styles to distinguish completed tasks */
+  }
+  

@@ -6,14 +6,12 @@ const app = express();
 
 const sessionMiddleware = require('./modules/session-middleware');
 const passport = require('./strategies/user.strategy');
- 
+
 // Route includes
 const userRouter = require('./routes/user.router');
-const groupBucketListRouter = require('./routes/groupBucketList.router');
-const myListRouter = require('./routes/myList.router')
-const groupsRouter = require ('./routes/groups.router');
-const userGroups = require('./routes/userGroups.router');
-
+const shelfRouter = require('./routes/shelf.router');
+const myShelfRouter = require('./routes/myShelf.router')
+const groupListRouter = require('./routes/groupList.router');
 // Body parser middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,10 +25,10 @@ app.use(passport.session());
 
 /* Routes */
 app.use('/api/user', userRouter);
-app.use('/api/groupBucketList', groupBucketListRouter);
-app.use('/api/myList', myListRouter);
-app.use('/api/groups', groupsRouter);
-app.use('/api/userGroups', userGroups);
+app.use('/api/shelf', shelfRouter);
+app.use('/api/myShelf', myShelfRouter);
+app.use('/api/groups', groupListRouter);
+
 
 // Serve static files
 app.use(express.static('build'));

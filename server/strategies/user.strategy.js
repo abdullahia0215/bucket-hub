@@ -6,7 +6,7 @@ const pool = require('../modules/pool');
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
- 
+
 passport.deserializeUser((id, done) => {
   pool
     .query('SELECT * FROM "user" WHERE id = $1', [id])
