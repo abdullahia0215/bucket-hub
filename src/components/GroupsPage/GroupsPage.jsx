@@ -17,36 +17,6 @@ function GroupList(props) {
         console.error("Error fetching groups:", error);
       });
   }, []);
-
-  const handleJoinGroup = async (groupId) => {
-    // Ensure userId is defined and accessible
-    const userId = props.userId;  // Assuming userId is passed as a prop
-  
-    // Check if the user is already in a group before making the API call
-    if (group && group.id === groupId) {
-      alert("You are already in this group.");
-      return;
-    }
-  
-    const url = `/api/groups/join/${groupId}`;
-    try {
-      const response = await axios.put(url, { userId });
-  
-      console.log("Joined the group successfully!");
-  
-      // Dispatch the SET_GROUP action with the joined group's details
-      const joinedGroup = { id: groupId, ...response.data };
-      props.dispatch({ type: "SET_GROUP", payload: joinedGroup });
-  
-    } catch (error) {
-      if (error.response && error.response.data) {
-        console.error("Error message from server:", error.response.data);
-      }
-      console.error("Error joining the group:", error);
-    }
-  };
-  
-
   return (
     <div>
       <h2>Groups</h2>
