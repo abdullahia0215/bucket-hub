@@ -22,19 +22,35 @@ router.post("/", rejectUnauthenticated, (req, res) => {
   const { group_name } = req.body;
   const creator_id = req.user.id; // Assuming the user ID is stored in req.user.id
 
-  // Define the SQL query to insert a new group into the "groups" table
-  const queryText =
-    'INSERT INTO "groups" ("group_name", "creator_id") VALUES ($1, $2) RETURNING *';
-
-  // Execute the SQL query with the group name and creator_id as parameters
+  // Check if the user has already created a group
+  const checkQueryText = 'SELECT * FROM "groups" WHERE creator_id = $1';
   pool
-    .query(queryText, [group_name, creator_id])
+    .query(checkQueryText, [creator_id])
     .then((result) => {
-      // Send the newly created group as the response
-      res.status(201).json(result.rows[0]);
+      if (result.rows.length > 0) {
+        // User has already created a group
+        res.status(400).send({ message: 'User can only create one group.' });
+        return;
+      }
+
+      // Define the SQL query to insert a new group into the "groups" table
+      const insertQueryText =
+        'INSERT INTO "groups" ("group_name", "creator_id") VALUES ($1, $2) RETURNING *';
+
+      // Execute the SQL query with the group name and creator_id as parameters
+      pool
+        .query(insertQueryText, [group_name, creator_id])
+        .then((insertResult) => {
+          // Send the newly created group as the response
+          res.status(201).json(insertResult.rows[0]);
+        })
+        .catch((error) => {
+          console.error("Error creating group:", error);
+          res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
+        });
     })
     .catch((error) => {
-      console.error("Error creating group:", error);
+      console.error("Error checking user's group:", error);
       res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
     });
 });
