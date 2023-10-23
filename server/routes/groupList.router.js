@@ -101,7 +101,25 @@ router.get("/groupItems"), rejectUnauthenticated, (req, res) => {
         })
     
 }
-
+router.get('/check', rejectUnauthenticated, (req, res) => {
+    const creatorId = req.user.id; // Assuming the user ID is stored in req.user.id
+  
+    // Define the SQL query to check if the user has created a group
+    const checkQueryText = 'SELECT EXISTS(SELECT 1 FROM "groups" WHERE creator_id = $1)';
+    pool
+      .query(checkQueryText, [creatorId])
+      .then((result) => {
+        // Extract the boolean value from the result
+        const hasCreatedGroup = result.rows[0].exists;
+  
+        // Send the response indicating whether the user has created a group or not
+        res.status(200).json({ hasCreatedGroup });
+      })
+      .catch((error) => {
+        console.error('Error checking user\'s group:', error);
+        res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
+      });
+  });
 
 
 

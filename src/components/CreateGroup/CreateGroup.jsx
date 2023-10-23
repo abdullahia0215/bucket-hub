@@ -7,25 +7,36 @@ function CreateGroup() {
 
   // Event handler for form submission
   const handleSubmit = (e) => {
-    alert('Group created!');
     e.preventDefault();
-
-    // Create a new group object
-    const newGroup = {
-      group_name: groupName,
-      // You can add more properties if needed
-    };
-
-    // Make a POST request to create a new group
-    axios.post('/api/groups', newGroup)
+  
+    // Check if the user has already created a group
+    axios.get('/api/groups/check')
       .then((response) => {
-        // Handle success, e.g., show a success message or redirect
-        console.log('Group created successfully:', response.data);
-        history.push('/groups');
+        if (response.data.hasCreatedGroup) {
+          // User has already created a group
+          alert('You can only create one group.');
+        } else {
+          // Create a new group object
+          const newGroup = {
+            group_name: groupName,
+            // You can add more properties if needed
+          };
+  
+          // Make a POST request to create a new group
+          axios.post('/api/groups', newGroup)
+            .then((response) => {
+              // Handle success, e.g., show a success message or redirect
+              console.log('Group created successfully:', response.data);
+              history.push('/groups');
+            })
+            .catch((error) => {
+              // Handle errors, e.g., show an error message
+              console.error('Error creating group:', error);
+            });
+        }
       })
       .catch((error) => {
-        // Handle errors, e.g., show an error message
-        console.error('Error creating group:', error);
+        console.error('Error checking user\'s group:', error);
       });
   };
 
