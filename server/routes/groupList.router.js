@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../modules/pool");
-const { rejectUnauthenticated } = require("../modules/authentication-middleware");
+const {
+  rejectUnauthenticated,
+} = require("../modules/authentication-middleware");
 
 // GET all groups
 router.get("/", rejectUnauthenticated, (req, res) => {
@@ -29,7 +31,7 @@ router.post("/", rejectUnauthenticated, (req, res) => {
     .then((result) => {
       if (result.rows.length > 0) {
         // User has already created a group
-        res.status(400).send({ message: 'User can only create one group.' });
+        res.status(400).send({ message: "User can only create one group." });
         return;
       }
 
@@ -54,76 +56,90 @@ router.post("/", rejectUnauthenticated, (req, res) => {
       res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
     });
 });
-router.put("/join", rejectUnauthenticated, (req, res) => {
-  const { groupId } = req.params;
-  const { userId } = req.body;
 
-  // First, check if the user is already a member of a group
+router.post("/join", rejectUnauthenticated, (req, res) => {
+  const { groupId, userId } = req.body;
+  console.log("Joining group", groupId, "with user", userId);
+  // First, check if the user is already part of a group
   pool
-    .query('SELECT * FROM user_groups WHERE user_id = $1', [userId])
+    .query("SELECT * FROM user_groups WHERE user_id = $1", [userId])
     .then((result) => {
       if (result.rows.length > 0) {
-        // User is already a member of a group
-        res.status(400).send({ message: 'User already in a group.' });
-        return;
+        console.log("User is already part of a group. Rows returned are:", result.rows);
+        // The user is already part of a group, return a message
+        res.status(400).send({ message: "User already in a group." });
+      } else {
+        // If the user isn't part of a group, insert them into the user_groups table
+        const insertQuery =
+          "INSERT INTO user_groups (group_id, user_id) VALUES ($1, $2)";
+        pool
+          .query(insertQuery, [groupId, userId])
+          .then(() => {
+            res.sendStatus(201); // Successfully inserted
+          })
+          .catch((insertError) => {
+            console.error("Error adding user to group:", insertError);
+            res.sendStatus(500); // Internal server error
+          });
       }
-
-      // If user is not a member of any group, proceed to join them to the new group
-      const queryText = "UPDATE user_groups SET group_id = $1 WHERE user_id = $2;";
-      pool
-        .query(queryText, [groupId, userId])
-        .then(() => {
-          res.sendStatus(201); // Send a 201 Created status upon successful join
-        })
-        .catch((error) => {
-          console.error("Error joining group:", error);
-          res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
-        });
-
     })
     .catch((error) => {
       console.error("Error checking user membership:", error);
-      res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
+      res.sendStatus(500); // Internal server error
     });
 });
 
-router.get("/groupItems"), rejectUnauthenticated, (req, res) => {
+router.post("/leave", rejectUnauthenticated, (req, res) => {
+  const { groupId, userId } = req.body;
+
+  // Delete the entry from the user_groups table for the specific user and group
+  const deleteQuery = "DELETE FROM user_groups WHERE group_id = $1 AND user_id = $2";
+  pool
+    .query(deleteQuery, [groupId, userId])
+    .then(() => {
+      res.sendStatus(200); // Successfully left the group
+    })
+    .catch((error) => {
+      console.error("Error removing user from group:", error);
+      res.sendStatus(500); // Internal server error
+    });
+});
+
+
+router.get("/groupItems"),
+  rejectUnauthenticated,
+  (req, res) => {
     const { groupId, userId } = req.body;
     const queryText = "SELECT FROM group_list WHERE id = $1 AND user_id = $2;";
     pool
-        .query(queryText, [groupId, userId])
-        .then((result) => {
-            res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.error("Error executing groupItems query:", error);
-            res.sendStatus(500);
-        })
-    
-}
-router.get('/check', rejectUnauthenticated, (req, res) => {
-    const creatorId = req.user.id; // Assuming the user ID is stored in req.user.id
-  
-    // Define the SQL query to check if the user has created a group
-    const checkQueryText = 'SELECT EXISTS(SELECT 1 FROM "groups" WHERE creator_id = $1)';
-    pool
-      .query(checkQueryText, [creatorId])
+      .query(queryText, [groupId, userId])
       .then((result) => {
-        // Extract the boolean value from the result
-        const hasCreatedGroup = result.rows[0].exists;
-  
-        // Send the response indicating whether the user has created a group or not
-        res.status(200).json({ hasCreatedGroup });
+        res.sendStatus(200);
       })
       .catch((error) => {
-        console.error('Error checking user\'s group:', error);
-        res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
+        console.error("Error executing groupItems query:", error);
+        res.sendStatus(500);
       });
-  });
+  };
+router.get("/check", rejectUnauthenticated, (req, res) => {
+  const creatorId = req.user.id; // Assuming the user ID is stored in req.user.id
 
+  // Define the SQL query to check if the user has created a group
+  const checkQueryText =
+    'SELECT EXISTS(SELECT 1 FROM "groups" WHERE creator_id = $1)';
+  pool
+    .query(checkQueryText, [creatorId])
+    .then((result) => {
+      // Extract the boolean value from the result
+      const hasCreatedGroup = result.rows[0].exists;
 
-
-
-
+      // Send the response indicating whether the user has created a group or not
+      res.status(200).json({ hasCreatedGroup });
+    })
+    .catch((error) => {
+      console.error("Error checking user's group:", error);
+      res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
+    });
+});
 
 module.exports = router;

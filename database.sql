@@ -27,8 +27,9 @@ CREATE TABLE "my_list" (
 );
 
 CREATE TABLE "user_groups" (
-    "id" SERIAL PRIMARY KEY,
-    "group_id" INTEGER REFERENCES "groups"("id"),
-    "user_id" INTEGER REFERENCES "user"("id"),
-    "admin" BOOLEAN
+  "id" SERIAL PRIMARY KEY,
+  "group_id" INTEGER REFERENCES "groups"("id"),
+  "user_id" INTEGER REFERENCES "user"("id"),
+  "admin" BOOLEAN DEFAULT FALSE
 );
+

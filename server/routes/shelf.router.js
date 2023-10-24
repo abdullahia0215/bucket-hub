@@ -33,23 +33,18 @@ router.get("/", rejectUnauthenticated, (req, res) => {
 /**
  * Add an item for the logged in user to the shelf
  */
-router.post("/", rejectUnauthenticated, (req, res) => {
-  const item = req.body;
-  const user = req.user;
-  console.log(`item: ${item} - user: ${user}`);
-  const queryText = `INSERT INTO "group_list" ("description", "user_id")
-  VALUES ($1, $2, $3);`;
-  pool
-    .query(queryText, [item.description, item.image_url, user.id])
-    .then(() => {
-      res.status(201).json({ message: "Values inserted!" });
-    })
+router.post('/addTaskGroup', (req, res) => {
+  const newItem = req.body;
+  newItem.complete = false;
+  const groupId = newItem.group_id;
+  const queryText = 'INSERT INTO "group_list" ("group_id", "user_id", "task", "complete") VALUES ($1, $2, $3, $4);';
+  pool.query(queryText, [newItem.groupId, req.user.id, newItem.task, newItem.complete])
+    .then(() => res.sendStatus(201))
     .catch((error) => {
-      console.log("Error in POST: ", error);
+      console.log('Error in POST myShelf', error);
       res.sendStatus(500);
     });
 });
-
 /**
  * Delete an item if it's something the logged in user added
  */

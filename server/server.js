@@ -12,6 +12,7 @@ const userRouter = require('./routes/user.router');
 const shelfRouter = require('./routes/shelf.router');
 const myShelfRouter = require('./routes/myShelf.router')
 const groupListRouter = require('./routes/groupList.router');
+const createGroupRouter = require('./routes/createGroup.router');
 // Body parser middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,6 +29,7 @@ app.use('/api/user', userRouter);
 app.use('/api/shelf', shelfRouter);
 app.use('/api/myShelf', myShelfRouter);
 app.use('/api/groups', groupListRouter);
+app.use('/api/createGroup', createGroupRouter);
 
 
 // Serve static files

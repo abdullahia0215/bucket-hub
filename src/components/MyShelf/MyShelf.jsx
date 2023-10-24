@@ -44,8 +44,6 @@ export default function ShelfPage() {
     axios.put(`/api/myShelf/complete/${taskId}`)
         .then(() => {
             dispatch({ type: "FETCH_MY_SHELF" });
-            
-            // Update the state to indicate that this button has been clicked
             setCompletedButtons(prevState => ({
               ...prevState,
               [taskId]: true,

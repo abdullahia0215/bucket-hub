@@ -1,37 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 function CreateGroup() {
-  // State variables to capture group information
   const [groupName, setGroupName] = useState('');
+  const [userID, setUserID] = useState('');
+  const history = useHistory();
 
-  // Event handler for form submission
+  useEffect(() => {
+    axios.get('/api/user')
+      .then((response) => {
+        console.log('User ID:', response.data.id);
+        setUserID(response.data.id);
+      })
+      .catch((error) => {
+        console.error('Error fetching user ID:', error);
+      });
+  }, []);
+  
+  console.log('userID:', userID); // Check the value of userID after the useEffect
+
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    // Check if the user has already created a group
+
     axios.get('/api/groups/check')
       .then((response) => {
         if (response.data.hasCreatedGroup) {
-          // User has already created a group
           alert('You can only create one group.');
         } else {
-          // Create a new group object
-          const newGroup = {
+          const groupData = {
             group_name: groupName,
-            // You can add more properties if needed
+            user_id: userID,
+            admin: true,
+            creator_id: userID // Set creator_id to the current user's ID
           };
-  
-          // Make a POST request to create a new group
-          axios.post('/api/groups', newGroup)
+
+          axios.post('/api/createGroup', groupData)
             .then((response) => {
-              // Handle success, e.g., show a success message or redirect
-              console.log('Group created successfully:', response.data);
-              history.push('/groups');
+              console.log('Group and user group created successfully:', response.data);
+              // Redirect to a success page or do something else
             })
             .catch((error) => {
-              // Handle errors, e.g., show an error message
-              console.error('Error creating group:', error);
+              console.error('Error creating group and user group:', error);
             });
         }
       })
@@ -53,7 +63,6 @@ function CreateGroup() {
             required
           />
         </div>
-        {/* You can add more form fields as needed */}
         <div>
           <button type="submit">Create Group</button>
         </div>
