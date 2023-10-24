@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  TextField,
-  FormControl,
-  Button,
-} from "@mui/material";
 import "./ShelfPage.css";
 import axios from "axios";
 
@@ -25,13 +18,13 @@ export default function ShelfPage() {
 
   const itemList = useSelector((store) => store.itemsReducer);
 
- const handleAddTask = () => {
+  const handleAddTask = () => {
     axios.post('/api/shelf/addTaskGroup', { task })
       .then(() => {
         dispatch({ type: "FETCH_GROUP_SHELF" });
         settask("");
-      })
- }
+      });
+  };
 
   const handleLeaveGroup = () => {
     const groupId = group?.id || null;
@@ -44,39 +37,36 @@ export default function ShelfPage() {
         console.error("Error leaving group:", error);
       });
   };
+
   return (
     <div className="container">
       <h2>Group List</h2>
 
-      <Button
+      <button
         onClick={handleLeaveGroup}
-        variant="contained"
         style={{ backgroundColor: "crimson", marginBottom: "10px" }}
       >
         Leave Group
-      </Button>
-      <Card className="form-card">
-        <CardContent>
+      </button>
+      <div className="form-card">
+        <div className="card-content">
           <form>
-            <FormControl fullWidth>
-              <TextField
+            <div>
+              <input
                 className="form-control"
                 placeholder="Add Item"
-                variant="outlined"
                 required
                 value={task}
                 onChange={(e) => settask(e.target.value)}
               />
-            </FormControl>
+            </div>
             <br />
             <br />
-            <Button onClick={() => history.push("/shelf")}>Cancel</Button>
-            <Button variant="contained" onClick={handleAddTask}>
-              Add Item
-            </Button>
+            <button onClick={() => history.push("/shelf")}>Cancel</button>
+            <button onClick={handleAddTask}>Add Item</button>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       <ul>
         {itemList.map((item) => (
           <ShelfItem key={item.id} item={item} />
@@ -123,24 +113,23 @@ function ShelfItem({ item }) {
         </div>
       )}
       {item.user_id && (
-        <Button
+        <button
           onClick={() => dispatch({ type: "DELETE_ITEM", payload: item.id })}
-          variant="contained"
           style={{ backgroundColor: "crimson" }}
         >
           Delete
-        </Button>
+        </button>
       )}
-      <Button
-        variant="contained"
+      <button
         onClick={() => handleEdit()}
         style={{ marginLeft: "10px" }}
       >
         Edit
-      </Button>
+      </button>
 
       <br />
       <br />
     </li>
+
   );
 }

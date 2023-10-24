@@ -61,6 +61,7 @@ function CreateGroup() {
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
             required
+            class = "input"
           />
         </div>
         <div>
