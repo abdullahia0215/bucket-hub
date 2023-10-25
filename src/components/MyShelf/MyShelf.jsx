@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Row, Col, Table, Button, Input } from 'reactstrap';
-import axios from 'axios';
-import './MyShelf.css';
+import { Container, Row, Col, Table, Button, Input } from "reactstrap";
+import axios from "axios";
+import "./MyShelf.css";
 
 export default function ShelfPage() {
   const dispatch = useDispatch();
-  const [newTask, setNewTask] = useState('');
+  const [newTask, setNewTask] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
-  const [editedTaskValue, setEditedTaskValue] = useState('');
-  
+  const [editedTaskValue, setEditedTaskValue] = useState("");
+
   // State to track clicked status of "Complete" buttons
   const [completedButtons, setCompletedButtons] = useState({});
 
@@ -20,51 +20,55 @@ export default function ShelfPage() {
   const itemList = useSelector((store) => store.myItemsReducer);
 
   const handleAddTask = () => {
-    axios.post('/api/myShelf', { task: newTask })
-        .then(() => {
-            dispatch({ type: "FETCH_MY_SHELF" });
-            setNewTask('');
-        })
-        .catch(error => {
-            console.log('Error adding task:', error);
-        });
-  }
+    axios
+      .post("/api/myShelf", { task: newTask })
+      .then(() => {
+        dispatch({ type: "FETCH_MY_SHELF" });
+        setNewTask("");
+      })
+      .catch((error) => {
+        console.log("Error adding task:", error);
+      });
+  };
 
   const handleEditTask = (taskId) => {
-    axios.put(`/api/myShelf/${taskId}`, { task: editedTaskValue })
-        .then(() => {
-            dispatch({ type: "FETCH_MY_SHELF" });
-            setEditingTaskId(null);
-            setEditedTaskValue('');
-        })
-        .catch(error => {
-            console.log('Error editing task:', error);
-        });
-  }
+    axios
+      .put(`/api/myShelf/${taskId}`, { task: editedTaskValue })
+      .then(() => {
+        dispatch({ type: "FETCH_MY_SHELF" });
+        setEditingTaskId(null);
+        setEditedTaskValue("");
+      })
+      .catch((error) => {
+        console.log("Error editing task:", error);
+      });
+  };
 
   const handleCompleteTask = (taskId) => {
-    axios.put(`/api/myShelf/complete/${taskId}`)
-        .then(() => {
-            dispatch({ type: "FETCH_MY_SHELF" });
-            setCompletedButtons(prevState => ({
-              ...prevState,
-              [taskId]: true,
-            }));
-        })
-        .catch(error => {
-            console.log('Error completing task:', error);
-        });
-  }
+    axios
+      .put(`/api/myShelf/complete/${taskId}`)
+      .then(() => {
+        dispatch({ type: "FETCH_MY_SHELF" });
+        setCompletedButtons((prevState) => ({
+          ...prevState,
+          [taskId]: true,
+        }));
+      })
+      .catch((error) => {
+        console.log("Error completing task:", error);
+      });
+  };
 
   const handleDeleteTask = (taskId) => {
-    axios.delete(`/api/myShelf/${taskId}`)
-        .then(() => {
-            dispatch({ type: "FETCH_MY_SHELF" });
-        })
-        .catch(error => {
-            console.log('Error deleting task:', error);
-        });
-  }
+    axios
+      .delete(`/api/myShelf/${taskId}`)
+      .then(() => {
+        dispatch({ type: "FETCH_MY_SHELF" });
+      })
+      .catch((error) => {
+        console.log("Error deleting task:", error);
+      });
+  };
 
   return (
     <Container className="my-shelf-container">
@@ -80,24 +84,26 @@ export default function ShelfPage() {
           />
         </Col>
         <Col md={4}>
-          <Button color="primary" onClick={handleAddTask} type="glumbo">Add</Button>
+          <Button color="primary" onClick={handleAddTask} type="glumbo">
+            Add
+          </Button>
         </Col>
       </Row>
-  
+
       <Table>
         <thead>
           <tr>
-            <th>Task Name</th>
-            <th>Complete</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th type="myshelf-page-header">Task Name</th>
+            <th type="myshelf-page-header">Complete</th>
+            <th type="myshelf-page-header">Edit</th>
+            <th type="myshelf-page-header">Delete</th>
           </tr>
         </thead>
         <tbody>
           {itemList.map((item, index) => {
             return (
               <tr key={item.id || index}>
-                <td>
+                <td type="myshelf-page-body">
                   {editingTaskId === item.id ? (
                     <>
                       <Input
@@ -105,17 +111,21 @@ export default function ShelfPage() {
                         value={editedTaskValue}
                         onChange={(e) => setEditedTaskValue(e.target.value)}
                       />
-                      <Button color="primary" onClick={() => handleEditTask(item.id)} id="save">Save</Button>
+                      <Button
+                        color="primary"
+                        onClick={() => handleEditTask(item.id)}
+                        type="save"
+                      >
+                        Save
+                      </Button>
                     </>
                   ) : (
-                    <>
-                      {item.task}
-                    </>
+                    <>{item.task}</>
                   )}
                 </td>
-                <td>
+                <td type="myshelf-page-body">
                   <Button
-                  type="glumbo"
+                    type="glumbo"
                     color="primary"
                     onClick={() => handleCompleteTask(item.id)}
                     id="complete"
@@ -123,13 +133,25 @@ export default function ShelfPage() {
                     Complete
                   </Button>
                 </td>
-                <td>
+                <td type="myshelf-page-body">
                   {editingTaskId !== item.id && (
-                    <Button color="primary" onClick={() => setEditingTaskId(item.id)} type="glumbo">Edit</Button>
+                    <Button
+                      color="primary"
+                      onClick={() => setEditingTaskId(item.id)}
+                      type="glumbo"
+                    >
+                      Edit
+                    </Button>
                   )}
                 </td>
-                <td>
-                  <Button color="primary" onClick={() => handleDeleteTask(item.id)} type="glumbo">Delete</Button>
+                <td type="myshelf-page-body">
+                  <Button
+                    color="primary"
+                    onClick={() => handleDeleteTask(item.id)}
+                    type="glumbo"
+                  >
+                    Delete
+                  </Button>
                 </td>
               </tr>
             );
