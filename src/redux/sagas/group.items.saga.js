@@ -15,7 +15,7 @@ function* fetchGroupShelf() {
 function* addItemSaga(action) {
   try {
     console.log('action.payload:', action.payload);
-    yield axios.post("/api/shelf/addTaskGroup", action.payload);
+    yield axios.post('/api/shelf/addTaskGroup/${action.payload.group.id}', action.payload);
     yield put({ type: "FETCH_GROUP_SHELF" });
   } catch (error) {
     console.log("error in addItemSaga", error);

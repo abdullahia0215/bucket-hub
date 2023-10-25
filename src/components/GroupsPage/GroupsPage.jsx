@@ -23,6 +23,7 @@ function GroupList(props) {
         console.log("Group joined successfully:", response.data);
         // Dispatch an action to set the joined group in the Redux store
         props.dispatch({ type: 'SET_GROUP', payload: { id: groupId } });
+
         console.log("Dispatching SET_GROUP with:", { id: groupId });
 
       })

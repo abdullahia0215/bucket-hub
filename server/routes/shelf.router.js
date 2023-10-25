@@ -36,12 +36,12 @@ router.get("/", rejectUnauthenticated, (req, res) => {
 router.post('/addTaskGroup', rejectUnauthenticated, (req, res) => {
   const newItem = req.body;
   newItem.complete = false;
-  const groupId = newItem.group_id;
+  const group_id = newItem.group.id;
 
   console.log("Adding item:", newItem);  // Debugging log
 
   const queryText = 'INSERT INTO "group_list" ("group_id", "user_id", "task", "complete") VALUES ($1, $2, $3, $4);';
-  pool.query(queryText, [groupId, req.user.id, newItem.task, newItem.complete])
+  pool.query(queryText, [group_id, req.user.id, newItem.task, newItem.complete])
     .then(() => res.sendStatus(201))
     .catch((error) => {
       console.log('Error in POST myShelf', error);

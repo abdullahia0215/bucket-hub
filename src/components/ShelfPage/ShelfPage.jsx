@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Card, CardBody, Input, Button } from "reactstrap";
 import "./ShelfPage.css";
 import axios from "axios";
 
@@ -20,8 +19,13 @@ export default function ShelfPage() {
 
   const itemList = useSelector((store) => store.itemsReducer);
 
+
+
+
   const handleAddTask = () => {
+    console.log("Handle add task:", task);
     if (group && group.group) {
+
       dispatch({
         type: 'ADD_GROUP_ITEM',
         payload: { task, group_id: group.group.id }
@@ -30,8 +34,8 @@ export default function ShelfPage() {
       console.error("Group or group.group is undefined");
     }
     setTask('');
-  };
-  
+};
+
   
 
   const handleLeaveGroup = () => {
@@ -43,17 +47,15 @@ export default function ShelfPage() {
     <div className="container">
       <h2>Group List</h2>
 
-      <Button
+      <button
         onClick={handleLeaveGroup}
         color="danger"
         style={{ marginBottom: "10px" }}
       >
         Leave Group
-      </Button>
-      <Card className="form-card">
-        <CardBody>
+      </button>
           <form>
-            <Input
+            <input
               className="form-control"
               placeholder="Add Item"
               required
@@ -62,13 +64,11 @@ export default function ShelfPage() {
             />
             <br />
             <br />
-            <Button onClick={() => history.push("/shelf")}>Cancel</Button>
-            <Button color="primary" onClick={handleAddTask}>
+            <button onClick={() => history.push("/shelf")}>Cancel</button>
+            <button color="primary" onClick={handleAddTask}>
               Add Item
-            </Button>
+            </button>
           </form>
-        </CardBody>
-      </Card>
       <ul>
         {itemList.map((item) => (
           <ShelfItem key={item.id} item={item} />
@@ -114,16 +114,16 @@ export default function ShelfPage() {
           </div>
         )}
         {item.user_id && (
-          <Button
+          <button
             onClick={() => dispatch({ type: "DELETE_ITEM", payload: item.id })}
             color="danger"
           >
             Delete
-          </Button>
+          </button>
         )}
-        <Button onClick={() => handleEdit()} style={{ marginLeft: "10px" }}>
+        <button onClick={() => handleEdit()} style={{ marginLeft: "10px" }}>
           Edit
-        </Button>
+        </button>
 
         <br />
         <br />
