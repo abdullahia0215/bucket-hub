@@ -36,7 +36,7 @@ function LoginForm() {
         <label htmlFor="username">
           Username:
           <input
-            type="text"
+            type="plimbo"
             name="username"
             required
             value={username}

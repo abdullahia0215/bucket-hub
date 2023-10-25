@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Container, Row, Col, Table, Button, Input } from 'reactstrap';
 import axios from 'axios';
+import './MyShelf.css';
 
 export default function ShelfPage() {
   const dispatch = useDispatch();
@@ -65,47 +67,75 @@ export default function ShelfPage() {
   }
 
   return (
-    <div className="container">
+    <Container className="my-shelf-container">
       <h2>My List</h2>
-      <input
-        type="text"
-        placeholder="Add new task"
-        value={newTask}
-        onChange={(e) => setNewTask(e.target.value)}
-      />
-      <button onClick={handleAddTask}>Add</button>
-      <ul>
-        {itemList.map((item, index) => {
-          return (
-            <li key={item.id || index}>
-              {editingTaskId === item.id ? (
-                <>
-                  <input
-                    type="text"
-                    value={editedTaskValue}
-                    onChange={(e) => setEditedTaskValue(e.target.value)}
-                  />
-                  <button onClick={() => handleEditTask(item.id)}>Save</button>
-                </>
-              ) : (
-                <>
-                  {item.task}
-                  <button
+      <Row>
+        <Col md={8} className="add-task">
+          <Input
+            type="text"
+            placeholder="Add new task"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            required
+          />
+        </Col>
+        <Col md={4}>
+          <Button color="primary" onClick={handleAddTask} type="glumbo">Add</Button>
+        </Col>
+      </Row>
+  
+      <Table>
+        <thead>
+          <tr>
+            <th>Task Name</th>
+            <th>Complete</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {itemList.map((item, index) => {
+            return (
+              <tr key={item.id || index}>
+                <td>
+                  {editingTaskId === item.id ? (
+                    <>
+                      <Input
+                        type="text"
+                        value={editedTaskValue}
+                        onChange={(e) => setEditedTaskValue(e.target.value)}
+                      />
+                      <Button color="primary" onClick={() => handleEditTask(item.id)} id="save">Save</Button>
+                    </>
+                  ) : (
+                    <>
+                      {item.task}
+                    </>
+                  )}
+                </td>
+                <td>
+                  <Button
+                  type="glumbo"
+                    color="primary"
                     onClick={() => handleCompleteTask(item.id)}
-                    style={{
-                      backgroundColor: completedButtons[item.id] ? 'green' : 'white',
-                    }}
+                    id="complete"
                   >
                     Complete
-                  </button>
-                  <button onClick={() => setEditingTaskId(item.id)}>Edit</button>
-                  <button onClick={() => handleDeleteTask(item.id)}>Delete</button>
-                </>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );  
+                  </Button>
+                </td>
+                <td>
+                  {editingTaskId !== item.id && (
+                    <Button color="primary" onClick={() => setEditingTaskId(item.id)} type="glumbo">Edit</Button>
+                  )}
+                </td>
+                <td>
+                  <Button color="primary" onClick={() => handleDeleteTask(item.id)} type="glumbo">Delete</Button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    </Container>
+  );
 }

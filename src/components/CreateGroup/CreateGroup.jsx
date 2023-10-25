@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import './CreateGroup.css';
+import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 
 function CreateGroup() {
   const [groupName, setGroupName] = useState('');
@@ -9,7 +10,8 @@ function CreateGroup() {
   const history = useHistory();
 
   useEffect(() => {
-    axios.get('/api/user')
+    axios
+      .get('/api/user')
       .then((response) => {
         console.log('User ID:', response.data.id);
         setUserID(response.data.id);
@@ -18,13 +20,14 @@ function CreateGroup() {
         console.error('Error fetching user ID:', error);
       });
   }, []);
-  
-  console.log('userID:', userID); // Check the value of userID after the useEffect
+
+  console.log('userID:', userID);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.get('/api/groups/check')
+    axios
+      .get('/api/groups/check')
       .then((response) => {
         if (response.data.hasCreatedGroup) {
           alert('You can only create one group.');
@@ -33,10 +36,11 @@ function CreateGroup() {
             group_name: groupName,
             user_id: userID,
             admin: true,
-            creator_id: userID // Set creator_id to the current user's ID
+            creator_id: userID,
           };
 
-          axios.post('/api/createGroup', groupData)
+          axios
+            .post('/api/createGroup', groupData)
             .then((response) => {
               console.log('Group and user group created successfully:', response.data);
               // Redirect to a success page or do something else
@@ -47,29 +51,35 @@ function CreateGroup() {
         }
       })
       .catch((error) => {
-        console.error('Error checking user\'s group:', error);
+        console.error("Error checking user's group:", error);
       });
   };
 
   return (
-    <div>
-      <h2>Create a New Group</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Group Name:</label>
-          <input
-            type="text"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-            required
-            class = "input"
-          />
-        </div>
-        <div>
-          <button type="submit">Create Group</button>
-        </div>
-      </form>
-    </div>
+    <Container>
+      <Row>
+        <Col md={{ size: 6, offset: 3 }}>
+          <h2>Create a New Group</h2>
+          <Form onSubmit={handleSubmit}>
+            <FormGroup>
+              <Label for="groupName">Group Name:</Label>
+              <Input
+                type="text"
+                id="groupName"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                required
+              />
+            </FormGroup>
+            <FormGroup>
+              <Button color="primary" type="submit">
+                Create Group
+              </Button>
+            </FormGroup>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

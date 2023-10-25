@@ -13,7 +13,7 @@ function About() {
       </Row>
       <Row>
         <Col>
-          <h2 className="about-heading">Why I created BucketHub?</h2>
+          <h2 className="about-heading">Why Did I Create BucketHub?</h2>
           <p className="about-text">I always wanted to create a way to provide my friend group with a way of tracking milestones that we've always wanted to hit, it's like a progress tracker!</p>
         </Col>
       </Row>
