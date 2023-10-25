@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { Card, CardBody, Input, Button } from "reactstrap";
 import "./ShelfPage.css";
 import axios from "axios";
 
@@ -8,9 +9,10 @@ export default function ShelfPage() {
   const dispatch = useDispatch();
   const history = useHistory();
   const userId = useSelector((state) => state.user?.id);
-  const group = useSelector((state) => state.group);
+  const group = useSelector((state) => state.groupReducer);
+  console.log("group:", group);
 
-  const [task, settask] = useState("");
+  const [task, setTask] = useState("");
 
   useEffect(() => {
     dispatch({ type: "FETCH_ITEMS" });
@@ -19,54 +21,54 @@ export default function ShelfPage() {
   const itemList = useSelector((store) => store.itemsReducer);
 
   const handleAddTask = () => {
-    axios.post('/api/shelf/addTaskGroup', { task })
-      .then(() => {
-        dispatch({ type: "FETCH_GROUP_SHELF" });
-        settask("");
+    if (group && group.group) {
+      dispatch({
+        type: 'ADD_GROUP_ITEM',
+        payload: { task, group_id: group.group.id }
       });
+    } else {
+      console.error("Group or group.group is undefined");
+    }
+    setTask('');
   };
+  
+  
 
   const handleLeaveGroup = () => {
-    const groupId = group?.id || null;
-    axios.post(`/api/groups/leave`, { groupId, userId })
-      .then((response) => {
-        console.log("Left group successfully:", response.data);
-        dispatch({ type: 'UNSET_GROUP_REQUEST' })
-      })
-      .catch((error) => {
-        console.error("Error leaving group:", error);
-      });
+    console.log("Left group successfully:", response.data);
+    dispatch({ type: "UNSET_GROUP_REQUEST" });
   };
 
   return (
     <div className="container">
       <h2>Group List</h2>
 
-      <button
+      <Button
         onClick={handleLeaveGroup}
-        style={{ backgroundColor: "crimson", marginBottom: "10px" }}
+        color="danger"
+        style={{ marginBottom: "10px" }}
       >
         Leave Group
-      </button>
-      <div className="form-card">
-        <div className="card-content">
+      </Button>
+      <Card className="form-card">
+        <CardBody>
           <form>
-            <div>
-              <input
-                className="form-control"
-                placeholder="Add Item"
-                required
-                value={task}
-                onChange={(e) => settask(e.target.value)}
-              />
-            </div>
+            <Input
+              className="form-control"
+              placeholder="Add Item"
+              required
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+            />
             <br />
             <br />
-            <button onClick={() => history.push("/shelf")}>Cancel</button>
-            <button onClick={handleAddTask}>Add Item</button>
+            <Button onClick={() => history.push("/shelf")}>Cancel</Button>
+            <Button color="primary" onClick={handleAddTask}>
+              Add Item
+            </Button>
           </form>
-        </div>
-      </div>
+        </CardBody>
+      </Card>
       <ul>
         {itemList.map((item) => (
           <ShelfItem key={item.id} item={item} />
@@ -74,62 +76,58 @@ export default function ShelfPage() {
       </ul>
     </div>
   );
-}
 
-function ShelfItem({ item }) {
-  const dispatch = useDispatch();
-  const [editDescription, setEditDescription] = useState(item.description);
-  const [edit, setEdit] = useState(false);
+  function ShelfItem({ item }) {
+    const dispatch = useDispatch();
+    const [editDescription, setEditDescription] = useState(item.description);
+    const [edit, setEdit] = useState(false);
 
-  const handleEdit = () => {
-    setEdit(!edit);
-  };
+    const handleEdit = () => {
+      setEdit(!edit);
+    };
 
-  const saveEdit = (item) => {
-    setEdit(false);
-    dispatch({ type: "EDIT_ITEM", payload: item });
-  };
+    const saveEdit = (item) => {
+      setEdit(false);
+      dispatch({ type: "EDIT_ITEM", payload: item });
+    };
 
-  return (
-    <li>
-      {edit ? (
-        <div>
-          <input
-            type="text"
-            value={editDescription}
-            onChange={(e) => setEditDescription(e.target.value)}
-          />
-          <button className="editBtn" onClick={() => saveEdit(item)}>
-            Save
-          </button>
-          <button className="editBtn" onClick={() => handleEdit(null)}>
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <div>
-          Item: {item.description} <br />
-          <br />
-        </div>
-      )}
-      {item.user_id && (
-        <button
-          onClick={() => dispatch({ type: "DELETE_ITEM", payload: item.id })}
-          style={{ backgroundColor: "crimson" }}
-        >
-          Delete
-        </button>
-      )}
-      <button
-        onClick={() => handleEdit()}
-        style={{ marginLeft: "10px" }}
-      >
-        Edit
-      </button>
+    return (
+      <li>
+        {edit ? (
+          <div>
+            <input
+              type="text"
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+            />
+            <button className="editBtn" onClick={() => saveEdit(item)}>
+              Save
+            </button>
+            <button className="editBtn" onClick={() => handleEdit(null)}>
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div>
+            Item: {item.description} <br />
+            <br />
+          </div>
+        )}
+        {item.user_id && (
+          <Button
+            onClick={() => dispatch({ type: "DELETE_ITEM", payload: item.id })}
+            color="danger"
+          >
+            Delete
+          </Button>
+        )}
+        <Button onClick={() => handleEdit()} style={{ marginLeft: "10px" }}>
+          Edit
+        </Button>
 
-      <br />
-      <br />
-    </li>
-
-  );
+        <br />
+        <br />
+      </li>
+    );
+  }
 }

@@ -19,10 +19,8 @@ const initialState = {
 const groupReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_GROUP':
-      return {
-        ...state,
-        group: action.payload
-      };
+      return { ...state, group: action.payload };
+    
     case 'JOIN_GROUP':
       return {
         ...state,
