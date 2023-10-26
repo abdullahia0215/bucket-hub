@@ -47,4 +47,29 @@ router.post('/logout', (req, res) => {
   res.sendStatus(200);
 });
 
+// Fetch the group ID for the authenticated user
+router.get('/groups', rejectUnauthenticated, (req, res) => {
+  const userId = req.user.id;
+  
+  // Your SQL query might look different depending on the structure of your user_groups table
+  const queryText = `SELECT group_id FROM user_groups WHERE user_id = $1`;
+
+  pool
+    .query(queryText, [userId])
+    .then((result) => {
+      // Assuming the user is part of only one group
+      const groupId = result.rows[0]?.group_id;
+      if (groupId) {
+        res.send({ groupId });
+      } else {
+        // Handle cases where the user isn't associated with any group
+        res.status(404).send({ error: 'No group found for this user' });
+      }
+    })
+    .catch((err) => {
+      console.log('Error fetching group for user:', err);
+      res.sendStatus(500);
+    });
+});
+
 module.exports = router;

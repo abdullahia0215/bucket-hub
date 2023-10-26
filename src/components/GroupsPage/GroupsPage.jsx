@@ -16,21 +16,23 @@ function GroupList(props) {
       });
   }, []);
 
-  const handleJoinGroup = (groupId) => {
-    axios
-      .post(`/api/groups/join`, { groupId, userId })
-      .then((response) => {
-        console.log("Group joined successfully:", response.data);
-        // Dispatch an action to set the joined group in the Redux store
-        props.dispatch({ type: 'SET_GROUP', payload: { id: groupId } });
+const handleJoinGroup = (groupId) => {
+  axios
+    .post(`/api/groups/join`, { groupId, userId })
+    .then((response) => {
+      console.log("Group joined successfully:", response.data);
+      // Dispatch an action to set the joined group in the Redux store
+      props.dispatch({ type: 'SET_GROUP', payload: { id: groupId } });
 
-        console.log("Dispatching SET_GROUP with:", { id: groupId });
+      console.log("Dispatching SET_GROUP with:", { id: groupId });
 
-      })
-      .catch((error) => {
-        console.error("Error joining group:", error);
-      });
-  }
+      // Store the group ID in local storage
+      localStorage.setItem('groupId', groupId);
+    })
+    .catch((error) => {
+      console.error("Error joining group:", error);
+    });
+}
   
 
   return (

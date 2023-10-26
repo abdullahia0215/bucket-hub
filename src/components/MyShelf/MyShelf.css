@@ -54,3 +54,6 @@ button[type="save"]
 button[type="save"]:hover {
   background-color: #006B2D;
 }
+.completed-row {
+  background-color: green;
+}

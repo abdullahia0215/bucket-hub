@@ -44,20 +44,20 @@ export default function ShelfPage() {
       });
   };
 
-  const handleCompleteTask = (taskId) => {
-    axios
-      .put(`/api/myShelf/complete/${taskId}`)
-      .then(() => {
-        dispatch({ type: "FETCH_MY_SHELF" });
-        setCompletedButtons((prevState) => ({
-          ...prevState,
-          [taskId]: true,
-        }));
-      })
-      .catch((error) => {
-        console.log("Error completing task:", error);
-      });
-  };
+const handleCompleteTask = (taskId) => {
+  axios
+    .put(`/api/myShelf/complete/${taskId}`)
+    .then(() => {
+      dispatch({ type: "FETCH_MY_SHELF" });
+      setCompletedButtons((prevState) => ({
+        ...prevState,
+        [taskId]: true,
+      }));
+    })
+    .catch((error) => {
+      console.log("Error completing task:", error);
+    });
+};
 
   const handleDeleteTask = (taskId) => {
     axios
@@ -101,8 +101,12 @@ export default function ShelfPage() {
         </thead>
         <tbody>
           {itemList.map((item, index) => {
+            const isCompleted = completedButtons[item.id] || false;
             return (
-              <tr key={item.id || index}>
+              <tr
+                key={item.id || index}
+                className={isCompleted ? "completed-row" : ""}
+              >
                 <td type="myshelf-page-body">
                   {editingTaskId === item.id ? (
                     <>
