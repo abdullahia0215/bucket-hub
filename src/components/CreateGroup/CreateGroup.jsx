@@ -46,6 +46,7 @@ function CreateGroup() {
             .then((response) => {
               dispatch({ type: 'SET_GROUP', payload: { id: response.data.id } });
               console.log('Group and user group created successfully:', response.data);
+              history.push('/shelf');
               // Redirect to a success page or do something else
             })
             .catch((error) => {
@@ -60,30 +61,30 @@ function CreateGroup() {
 
   return (
     <Container>
-      <Row>
-        <Col md={{ size: 6, offset: 3 }}>
-          <h2>Create a New Brigade</h2>
-          <Form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label for="groupName">Brigade Name:</Label>
-              <Input
-                type="text"
-                id="groupName"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Button color="primary" type="submit">
-                Create Brigade
-              </Button>
-            </FormGroup>
-          </Form>
-        </Col>
-      </Row>
+        <Row>
+            <Col md={{ size: 6, offset: 3 }}>
+                <h2>Create a New Brigade</h2>
+                <Form onSubmit={handleSubmit}>
+                    <FormGroup>
+                        <Label for="groupName">Brigade Name:</Label>
+                        <Input
+                            type="text"
+                            id="groupName"
+                            value={groupName}
+                            onChange={(e) => setGroupName(e.target.value)}
+                            required
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Button color="primary" type="submit">
+                            Create Brigade
+                        </Button>
+                    </FormGroup>
+                </Form>
+            </Col>
+        </Row>
     </Container>
-  );
+);
 }
 
 export default CreateGroup;

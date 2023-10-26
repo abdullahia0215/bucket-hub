@@ -29,6 +29,7 @@ const handleJoinGroup = (groupId) => {
 
       // Store the group ID in local storage
       localStorage.setItem('groupId', groupId);
+      window.location.href = "/#/shelf";
     })
     .catch((error) => {
       console.error("Error joining group:", error);
@@ -36,19 +37,25 @@ const handleJoinGroup = (groupId) => {
 }
   
 
-  return (
-    <div>
-      <h2>Groups</h2>
-      <ul>
-        {groups.map((group) => (
-          <li key={group.id}>
-            {group.group_name}
-            <button onClick={() => handleJoinGroup(group.id)}>Join</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+return (
+  <div>
+    <h2>Brigades</h2>
+    <ul>
+      {groups.map((group) => (
+        <li key={group.id}>
+          {group.group_name}
+          <button
+            onClick={() => {
+              handleJoinGroup(group.id);
+            }}
+          >
+            Join
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 }
 
 const mapStateToProps = (state) => ({
