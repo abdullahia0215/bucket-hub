@@ -9,83 +9,107 @@ export default function ShelfPage() {
   const history = useHistory();
   const userId = useSelector((state) => state.user?.id);
   const group = useSelector((state) => state.groupReducer);
+  const [hasAccess, setHasAccess] = useState(null);  
+  const itemList = useSelector((store) => store.itemsReducer);
   console.log("group:", group);
 
   const [task, setTask] = useState("");
 
   useEffect(() => {
-    dispatch({ type: "FETCH_ITEMS" });
-  }, []);
-
-  const itemList = useSelector((store) => store.itemsReducer);
-
-  const handleAddTask = () => {
-    console.log("Handle add task:", task);
-    if (group && group.group) {
-
-      dispatch({
-        type: 'ADD_GROUP_ITEM',
-        payload: { task, group_id: group.group.id }
+    // Fetch the group shelf items as before
+    dispatch({ type: "FETCH_GROUP_SHELF" });
+  
+    // Check if the user has access to this page
+    axios.get('/api/shelf/checkUserGroupAccess')
+      .then((response) => {
+        setHasAccess(response.data.hasAccess);
+      })
+      .catch((error) => {
+        console.error("Error checking user group access:", error);
       });
-    } else {
-      console.error("Group or group.group is undefined");
-    }
-    setTask('');
-};
-
+  }, [dispatch]);
+  
+  if (hasAccess === null) {
+    return <div>Loading...</div>;
+  }
+  
+  // If the user doesn't have access, show an error or redirect
+  if (!hasAccess) {
+    return <div>Join a brigade first dummy</div>;
+  }
   
 
-const handleLeaveGroup = async () => {
-  // Ensure that group and group.group are both not null before proceeding
-  if (!group || !group.group) {
-    console.error("Group data is not available.");
-    return; // Exit the function early
-  }
 
-  const groupId = group.group.id;
 
-  try {
-    // Send the request to the server to leave the group
-    const response = await axios.post("/api/groups/leave", { groupId, userId });
 
-    // Log the response or handle any post-request logic
-    console.log("Left group successfully:", response.data);
+  const handleAddTask = () => {
+    axios.post("/api/shelf/addTaskGroup", {
+      task,
+      group_id: group.group.id,
+      user_id: userId,
+    }).then((response) => {
+      dispatch({ type: "FETCH_GROUP_SHELF" });
+      setTask("");
+    }).catch((error) => {
+      console.error("Error adding task:", error);
+    });
+  };
+    
 
-    // If necessary, update your local state or dispatch a Redux action
-    dispatch({ type: "UNSET_GROUP" });
+  const handleDeleteItem = (itemId) => {
+    dispatch({ type: "DELETE_GROUP_ITEM", payload: { id: itemId } });
+  };
 
-  } catch (error) {
-    console.error("Error leaving group:", error);
-  }
-};
+  const handleLeaveGroup = async () => {
+    // Ensure that group and group.group are both not null before proceeding
+    if (!group || !group.group) {
+      console.error("Group data is not available.");
+      return; // Exit the function early
+    }
 
+    const groupId = group.group.id;
+
+    try {
+      // Send the request to the server to leave the group
+      const response = await axios.post("/api/groups/leave", {
+        groupId,
+        userId,
+      });
+
+      // Log the response or handle any post-request logic
+      console.log("Left group successfully:", response.data);
+
+      // If necessary, update your local state or dispatch a Redux action
+      dispatch({ type: "UNSET_GROUP" });
+    } catch (error) {
+      console.error("Error leaving group:", error);
+    }
+  };
 
   return (
     <div className="container">
-      <h2>Group List</h2>
+      <h2>Brigade Dock</h2>
 
       <button
         onClick={handleLeaveGroup}
         color="danger"
         style={{ marginBottom: "10px" }}
       >
-        Leave Group
+        Leave Brigade
       </button>
-          <form>
-            <input
-              className="form-control"
-              placeholder="Add Item"
-              required
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
-            />
-            <br />
-            <br />
-            <button onClick={() => history.push("/shelf")}>Cancel</button>
-            <button color="primary" onClick={handleAddTask}>
-              Add Item
-            </button>
-          </form>
+      <form>
+        <input
+          className="form-control"
+          placeholder="Add Item"
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+        />
+        <br />
+        <br />
+        <button color="primary" onClick={handleAddTask}>
+          Add Item
+        </button>
+      </form>
       <ul>
         {itemList.map((item) => (
           <ShelfItem key={item.id} item={item} />
@@ -126,13 +150,13 @@ const handleLeaveGroup = async () => {
           </div>
         ) : (
           <div>
-            Item: {item.description} <br />
+            Item: {task} <br />
             <br />
           </div>
         )}
         {item.user_id && (
           <button
-            onClick={() => dispatch({ type: "DELETE_ITEM", payload: item.id })}
+            onClick={() => handleDeleteItem(item.id)}
             color="danger"
           >
             Delete

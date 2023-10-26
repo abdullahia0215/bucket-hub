@@ -6,16 +6,30 @@ function* fetchGroupShelf() {
   try {
     const items = yield axios.get("/api/shelf");
     console.log("FETCH request from fetchshelf saga");
+    console.log("Items received from server:", items.data);
     yield put({ type: "SET_GROUP_ITEMS", payload: items.data });
   } catch (error) {
     console.log("error in fetchshelf saga", error);
   }
 }
 
+
 function* addItemSaga(action) {
   try {
     console.log('action.payload:', action.payload);
-    yield axios.post('/api/shelf/addTaskGroup/${action.payload.group.id}', action.payload);
+    
+    // Extracting the first item from itemsReducer and user details
+    const itemToAdd = action.payload.itemsReducer[0];
+    const user = action.payload.user;
+
+    // Constructing the data to send to the server
+    const dataToSend = {
+      task: itemToAdd.task,
+      group_id: itemToAdd.group_id,
+      user_id: user.id
+    };
+
+    yield axios.post('/api/shelf/addTaskGroup', dataToSend);
     yield put({ type: "FETCH_GROUP_SHELF" });
   } catch (error) {
     console.log("error in addItemSaga", error);
@@ -23,9 +37,11 @@ function* addItemSaga(action) {
 }
 
 
+
+
 function* deleteItemSaga(action) {
   try {
-    yield axios.delete(`/api/shelf/${action.payload}`);
+    yield axios.delete('/api/shelf/:id', action.payload);
     yield put({ type: "FETCH_GROUP_SHELF" });
   } catch (error) {
     console.log("error with DELETE saga request", error);

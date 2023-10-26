@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import './CreateGroup.css';
+import { useDispatch } from 'react-redux';
 import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 
 function CreateGroup() {
   const [groupName, setGroupName] = useState('');
   const [userID, setUserID] = useState('');
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios
@@ -30,7 +32,7 @@ function CreateGroup() {
       .get('/api/groups/check')
       .then((response) => {
         if (response.data.hasCreatedGroup) {
-          alert('You can only create one group.');
+          alert('You can only be in 1 group! Please leave your current group before creating a new one.');
         } else {
           const groupData = {
             group_name: groupName,
@@ -42,6 +44,7 @@ function CreateGroup() {
           axios
             .post('/api/createGroup', groupData)
             .then((response) => {
+              dispatch({ type: 'SET_GROUP', payload: { id: response.data.id } });
               console.log('Group and user group created successfully:', response.data);
               // Redirect to a success page or do something else
             })
@@ -59,10 +62,10 @@ function CreateGroup() {
     <Container>
       <Row>
         <Col md={{ size: 6, offset: 3 }}>
-          <h2>Create a New Group</h2>
+          <h2>Create a New Brigade</h2>
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label for="groupName">Group Name:</Label>
+              <Label for="groupName">Brigade Name:</Label>
               <Input
                 type="text"
                 id="groupName"
@@ -73,7 +76,7 @@ function CreateGroup() {
             </FormGroup>
             <FormGroup>
               <Button color="primary" type="submit">
-                Create Group
+                Create Brigade
               </Button>
             </FormGroup>
           </Form>

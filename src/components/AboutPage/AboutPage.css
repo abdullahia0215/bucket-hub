@@ -5,11 +5,15 @@
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
-  }
+    transition: color 0.3s;
+  } 
   
   .about-text {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: #666;
     font-size: 16px;
     line-height: 1.5;
+  }
+  .about-heading:hover {
+    color: #c62145;
   }

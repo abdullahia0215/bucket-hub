@@ -12,6 +12,23 @@ const {
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+router.get('/checkUserGroupAccess', rejectUnauthenticated, (req, res) => {
+  const userId = req.user.id;
+  const queryText = 'SELECT * FROM "user_groups" WHERE "user_id" = $1';
+  
+  pool.query(queryText, [userId])
+    .then((result) => {
+      if (result.rows.length > 0) {
+        res.send({ hasAccess: true });
+      } else {
+        res.send({ hasAccess: false });
+      }
+    })
+    .catch((error) => {
+      console.error('Error checking user group access', error);
+      res.sendStatus(500);
+    });
+});
 
 /**
  * Get all of the items on the shelf
@@ -36,7 +53,7 @@ router.get("/", rejectUnauthenticated, (req, res) => {
 router.post('/addTaskGroup', rejectUnauthenticated, (req, res) => {
   const newItem = req.body;
   newItem.complete = false;
-  const group_id = newItem.group.id;
+  const group_id = newItem.group_id;
 
   console.log("Adding item:", newItem);  // Debugging log
 

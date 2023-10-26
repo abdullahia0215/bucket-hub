@@ -110,7 +110,7 @@ router.get("/groupItems"),
   rejectUnauthenticated,
   (req, res) => {
     const { groupId, userId } = req.body;
-    const queryText = "SELECT FROM group_list WHERE id = $1 AND user_id = $2;";
+    const queryText = "SELECT FROM group_list WHERE id = $1 AND group_id = $2;";
     pool
       .query(queryText, [groupId, userId])
       .then((result) => {
@@ -121,25 +121,26 @@ router.get("/groupItems"),
         res.sendStatus(500);
       });
   };
-router.get("/check", rejectUnauthenticated, (req, res) => {
-  const creatorId = req.user.id; // Assuming the user ID is stored in req.user.id
-
-  // Define the SQL query to check if the user has created a group
-  const checkQueryText =
-    'SELECT EXISTS(SELECT 1 FROM "groups" WHERE creator_id = $1)';
-  pool
-    .query(checkQueryText, [creatorId])
-    .then((result) => {
-      // Extract the boolean value from the result
-      const hasCreatedGroup = result.rows[0].exists;
-
-      // Send the response indicating whether the user has created a group or not
-      res.status(200).json({ hasCreatedGroup });
-    })
-    .catch((error) => {
-      console.error("Error checking user's group:", error);
-      res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
-    });
-});
+  router.get("/check", rejectUnauthenticated, (req, res) => {
+    const userId = req.user.id; // Assuming the user ID is stored in req.user.id
+  
+    // Define the SQL query to check if the user is part of any group
+    const checkQueryText =
+      'SELECT EXISTS(SELECT 1 FROM "user_groups" WHERE user_id = $1)';
+    pool
+      .query(checkQueryText, [userId])
+      .then((result) => {
+        // Extract the boolean value from the result
+        const isPartOfGroup = result.rows[0].exists;
+  
+        // Send the response indicating whether the user is part of any group or not
+        res.status(200).json({ hasCreatedGroup: isPartOfGroup }); // Keep the response key the same for compatibility with the frontend
+      })
+      .catch((error) => {
+        console.error("Error checking user's group:", error);
+        res.sendStatus(500); // Send a 500 Internal Server Error status in case of an error
+      });
+  });
+  
 
 module.exports = router;

@@ -5,7 +5,7 @@
   align-items: center;
 
   margin: 0 0 30px;
-  background-color: #006B2D;
+  background-color: #c62145;
   overflow: hidden;
 }
 
@@ -25,7 +25,7 @@
   font-family:Verdana, Geneva, Tahoma, sans-serif;
   display: inline-block;
   color: #f2f2f2;
-  background-color: #006B2D;
+  background-color: #c62145;
   text-align: center;
   padding: 24px 10px;
   text-decoration: none;
@@ -40,6 +40,6 @@
 }
 
 .navLink:hover {
-  background-color: #00421C;
+  background-color: #94374B;
 
 }

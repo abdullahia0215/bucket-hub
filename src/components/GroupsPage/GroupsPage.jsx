@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
+import './GroupsPage.css';
 function GroupList(props) {
   const [groups, setGroups] = useState([]);
   const userId = props.user.id; // Access the user's ID from props

@@ -25,16 +25,16 @@ function Nav() {
         {user.id && (
           <>
             <Link className="navLink" to="/groups">
-              Groups
+              Brigades
             </Link>
             <Link className="navLink" to="/shelf">
-              Group List
+              Brigade Dock
             </Link>
             <Link className="navLink" to="/myShelf">
-              My List
+              My Bucket
             </Link>
             <Link className="navLink" to="/createGroup">
-              Create Group
+              Start A Brigade
             </Link>
             <LogOutButton className="navLink" />
           </>

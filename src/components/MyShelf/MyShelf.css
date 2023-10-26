@@ -28,7 +28,7 @@ button[type="glumbo"] {
   transition: background-color 0.3s ease;
 }
 button[type="glumbo"]:hover {
-  background-color: #424549;
+  background-color: #94374B;
 }
 th[type="myshelf-page-header"] {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -52,7 +52,7 @@ button[type="save"]
   transition: background-color 0.3s ease;
 }
 button[type="save"]:hover {
-  background-color: #006B2D;
+  background-color: #94374B;
 }
 .completed-row {
   background-color: green;
