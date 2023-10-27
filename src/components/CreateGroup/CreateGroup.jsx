@@ -63,10 +63,10 @@ function CreateGroup() {
     <Container>
         <Row>
             <Col md={{ size: 6, offset: 3 }}>
-                <h2>Create a New Brigade</h2>
+                <h2>Start A Brigade</h2>
                 <Form onSubmit={handleSubmit}>
                     <FormGroup>
-                        <Label for="groupName">Brigade Name:</Label>
+                        <Label for="groupName" id="groupNameInput">Brigade Name:</Label>
                         <Input
                             type="text"
                             id="groupName"
@@ -76,7 +76,7 @@ function CreateGroup() {
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Button color="primary" type="submit">
+                        <Button color="primary" className='CreateGroupButton'>
                             Create Brigade
                         </Button>
                     </FormGroup>

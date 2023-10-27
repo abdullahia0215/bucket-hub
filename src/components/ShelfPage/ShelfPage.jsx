@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import ShelfItem from "../ShelfItem/ShelfItem";
 import axios from "axios";
 
 export default function ShelfPage() {
@@ -10,9 +11,12 @@ export default function ShelfPage() {
   const group = useSelector((state) => state.groupReducer);
   const [hasAccess, setHasAccess] = useState(null);
   const itemList = useSelector((store) => store.itemsReducer);
-  console.log("group:", group);
 
   const [task, setTask] = useState("");
+
+  console.log(group)
+
+
 
   useEffect(() => {
     // Fetch the group shelf items as before
@@ -35,13 +39,14 @@ export default function ShelfPage() {
 
   // If the user doesn't have access, show an error or redirect
   if (!hasAccess) {
-    return <div>Join a brigade first dummy</div>;
+    return <div className="noBrigadeMessage">Join a brigade first on the "Brigades" page!</div>;
   }
 
-  const handleAddTask = () => {
+  const handleAddTask = (e) => {
+    e.preventDefault()
     axios
       .post("/api/shelf/addTaskGroup", {
-        task,
+        task: task,
         group_id: group.group.id,
         user_id: userId,
       })
@@ -65,12 +70,12 @@ export default function ShelfPage() {
       return; // Exit the function early
     }
 
-    const groupId = group.group.id;
+    const group_id = group.group.id;
 
     try {
       // Send the request to the server to leave the group
       const response = await axios.post("/api/groups/leave", {
-        groupId,
+        group_id,
         userId,
       });
 
@@ -91,7 +96,7 @@ export default function ShelfPage() {
       <button
         onClick={() => {
           handleLeaveGroup();
-          window.location.href = "/#/groups";
+          window.location.href = "/#/brigades";
         }}
         color="danger"
         style={{ marginBottom: "10px" }}
@@ -111,62 +116,12 @@ export default function ShelfPage() {
           Add Item
         </button>
       </form>
-      <ul>
-        {itemList.map((item) => (
-          <ShelfItem key={item.id} item={item} />
+      {/* <ul>
+        {itemList?.map((item) => (
+          <ShelfItem key={item?.id} item={item} />
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 
-  function ShelfItem({ item }) {
-    const dispatch = useDispatch();
-    const [editDescription, setEditDescription] = useState(item.description);
-    const [edit, setEdit] = useState(false);
-
-    const handleEdit = () => {
-      setEdit(!edit);
-    };
-
-    const saveEdit = (item) => {
-      setEdit(false);
-      dispatch({ type: "EDIT_ITEM", payload: item });
-    };
-
-    return (
-      <li>
-        {edit ? (
-          <div>
-            <input
-              type="text"
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-            />
-            <button className="editBtn" onClick={() => saveEdit(item)}>
-              Save
-            </button>
-            <button className="editBtn" onClick={() => handleEdit(null)}>
-              Cancel
-            </button>
-          </div>
-        ) : (
-          <div>
-            Item: {task} <br />
-            <br />
-          </div>
-        )}
-        {item.user_id && (
-          <button onClick={() => handleDeleteItem(item.id)} color="danger">
-            Delete
-          </button>
-        )}
-        <button onClick={() => handleEdit()} style={{ marginLeft: "10px" }}>
-          Edit
-        </button>
-
-        <br />
-        <br />
-      </li>
-    );
-  }
 }

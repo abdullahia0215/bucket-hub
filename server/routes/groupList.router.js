@@ -22,7 +22,7 @@ router.get("/", rejectUnauthenticated, (req, res) => {
 router.post("/", rejectUnauthenticated, (req, res) => {
   // Extract group data from the request body
   const { group_name } = req.body;
-  const creator_id = req.user.id; // Assuming the user ID is stored in req.user.id
+  const creator_id = req.user.id; 
 
   // Check if the user has already created a group
   const checkQueryText = 'SELECT * FROM "groups" WHERE creator_id = $1';

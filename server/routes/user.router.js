@@ -72,4 +72,5 @@ router.get('/groups', rejectUnauthenticated, (req, res) => {
     });
 });
 
+
 module.exports = router;

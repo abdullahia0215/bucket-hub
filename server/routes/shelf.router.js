@@ -5,13 +5,10 @@ const {
   rejectUnauthenticated,
 } = require("../modules/authentication-middleware");
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// ADDED BY MARK FOR IMAGE UPLOAD, UNTESTED
 
 
 
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 router.get('/checkUserGroupAccess', rejectUnauthenticated, (req, res) => {
   const userId = req.user.id;
   const queryText = 'SELECT * FROM "user_groups" WHERE "user_id" = $1';
@@ -42,7 +39,7 @@ router.get("/", rejectUnauthenticated, (req, res) => {
       res.send(result.rows);
     })
     .catch((err) => {
-      console.log("error in the GET / request for authorized users", err);
+      console.log("error in the GET / request for authorçized users", err);
       res.sendStatus(500);
     });
 });

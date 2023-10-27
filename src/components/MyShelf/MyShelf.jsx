@@ -20,6 +20,8 @@ export default function ShelfPage() {
 
   const itemList = useSelector((store) => store.myItemsReducer);
 
+  console.log(itemList)
+
   const handleAddTask = () => {
     axios
       .post("/api/myShelf", { task: newTask })
@@ -104,6 +106,7 @@ export default function ShelfPage() {
         </thead>
         <tbody>
           {itemList.map((item, index) => {
+            console.log(item)
             const isCompleted = completedButtons[item.id] || false;
             const rowClass = isCompleted ? "completed-row" : ""; // Apply the class conditionally
             return (

@@ -33,7 +33,8 @@ function App() {
 
   useEffect(() => {
     dispatch({ type: 'FETCH_USER' });
-  }, [dispatch]);
+    dispatch({ type: 'FETCH_USER_GROUP'})
+  }, []);
 
   return (
     <Router>
@@ -67,7 +68,7 @@ function App() {
           <ProtectedRoute
             // logged in shows InfoPage else shows LoginPage
             exact
-            path="/shelf"
+            path="/brigade-list"
           >
             <ShelfPage />
           </ProtectedRoute>
@@ -75,7 +76,7 @@ function App() {
           <ProtectedRoute
             // logged in shows InfoPage else shows LoginPage
             exact
-            path="/myShelf"
+            path="/my-bucket"
           >
             <MyShelf />
           </ProtectedRoute>
@@ -121,10 +122,10 @@ function App() {
               <LandingPage />
             }
           </Route>
-          <ProtectedRoute exact path="/groups">
+          <ProtectedRoute exact path="/brigades">
             <GroupsPage />
           </ProtectedRoute>
-          <ProtectedRoute exact path="/createGroup">
+          <ProtectedRoute exact path="/start-brigade">
             <CreateGroup /> 
           </ProtectedRoute>
           {/* If none of the other routes matched, we will show a 404. */}

@@ -29,7 +29,7 @@ const handleJoinGroup = (groupId) => {
 
       // Store the group ID in local storage
       localStorage.setItem('groupId', groupId);
-      window.location.href = "/#/shelf";
+      window.location.href = "/#/brigade-list";
     })
     .catch((error) => {
       console.error("Error joining group:", error);

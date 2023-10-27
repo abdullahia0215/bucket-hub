@@ -78,3 +78,7 @@ Grid
   flex-basis: 100%;
   max-width: 100%;
 }
+.landing-text {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: larger;
+}

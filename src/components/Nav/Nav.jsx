@@ -24,16 +24,16 @@ function Nav() {
         {/* If a user is logged in, show these links */}
         {user.id && (
           <>
-            <Link className="navLink" to="/groups">
+            <Link className="navLink" to="/brigades">
               Brigades
             </Link>
-            <Link className="navLink" to="/shelf">
+            <Link className="navLink" to="/brigade-list">
               Brigade Dock
             </Link>
-            <Link className="navLink" to="/myShelf">
+            <Link className="navLink" to="/my-bucket">
               My Bucket
             </Link>
-            <Link className="navLink" to="/createGroup">
+            <Link className="navLink" to="/start-brigade">
               Start A Brigade
             </Link>
             <LogOutButton className="navLink" />

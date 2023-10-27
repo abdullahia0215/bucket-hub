@@ -30,11 +30,12 @@ body {
   border-color: #014041;
   border-width: 1px 1px 3px;
   border-radius: 4px;
-  background-color: #00acb0;
+  background-color: #1d1417;
   color: #f8f8f8;
   font-size: 1.1rem;
   outline: 0;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .btn_sizeMin {
@@ -53,7 +54,7 @@ body {
 }
 
 .btn:hover {
-  background-color: #008183;
+  background-color: #5b3f48;
   text-decoration: none;
 }
 
@@ -70,8 +71,8 @@ body {
 
 .btn_asLink:hover {
   background-color: transparent;
-  border-color: #008183;
-  color: #008183;
+  border-color: white;
+  color: white;
 }
 
 /* --------------------------------------------------------------------------------
@@ -99,7 +100,7 @@ Form Treatment
   max-width: 100%;
   padding: 25px;
   margin: 0 auto 20px;
-  background-color: #efefef;
+  background-color: #1d1417;
   border-radius: 3px;
   box-shadow: 0 1px 2px rgb(0, 0, 0, 0.4);
 }
@@ -107,4 +108,7 @@ Form Treatment
 input {
   margin: 5px;
   margin-bottom: 10px;
+}
+.noBrigadeMessage {
+  padding-left: 550px;
 }
