@@ -31,7 +31,7 @@ function RegisterForm() {
         <label htmlFor="username">
           Username:
           <input
-            type="text"
+            type="plimbo"
             name="username"
             value={username}
             required
@@ -43,7 +43,7 @@ function RegisterForm() {
         <label htmlFor="password">
           Password:
           <input
-            type="password"
+            type="plimbo"
             name="password"
             value={password}
             required

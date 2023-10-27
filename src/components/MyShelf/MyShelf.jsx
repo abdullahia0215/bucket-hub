@@ -14,6 +14,7 @@ export default function ShelfPage() {
   const [completedButtons, setCompletedButtons] = useState({});
 
   useEffect(() => {
+    const storedCompletedTasks = JSON.parse(localStorage.getItem("completedTasks")) || {};
     dispatch({ type: "FETCH_MY_SHELF" });
   }, []);
 
@@ -44,20 +45,22 @@ export default function ShelfPage() {
       });
   };
 
-const handleCompleteTask = (taskId) => {
-  axios
-    .put(`/api/myShelf/complete/${taskId}`)
-    .then(() => {
-      dispatch({ type: "FETCH_MY_SHELF" });
-      setCompletedButtons((prevState) => ({
-        ...prevState,
-        [taskId]: true,
-      }));
-    })
-    .catch((error) => {
-      console.log("Error completing task:", error);
-    });
-};
+  const handleCompleteTask = (taskId) => {
+    axios
+      .put(`/api/myShelf/complete/${taskId}`)
+      .then(() => {
+        dispatch({ type: "FETCH_MY_SHELF" });
+        console.log(completedButtons);
+        setCompletedButtons((prevState) => ({
+          ...prevState,
+          [taskId]: true,
+        }));
+        localStorage.setItem("completedTasks", JSON.stringify({ ...completedButtons, [taskId]: true }));
+      })
+      .catch((error) => {
+        console.log("Error completing task:", error);
+      });
+  };
 
   const handleDeleteTask = (taskId) => {
     axios
@@ -102,10 +105,11 @@ const handleCompleteTask = (taskId) => {
         <tbody>
           {itemList.map((item, index) => {
             const isCompleted = completedButtons[item.id] || false;
+            const rowClass = isCompleted ? "completed-row" : ""; // Apply the class conditionally
             return (
               <tr
                 key={item.id || index}
-                className={isCompleted ? "completed-row" : ""}
+                className={rowClass} // Apply the class to the row
               >
                 <td type="myshelf-page-body">
                   {editingTaskId === item.id ? (

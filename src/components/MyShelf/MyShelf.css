@@ -55,5 +55,6 @@ button[type="save"]:hover {
   background-color: #94374B;
 }
 .completed-row {
-  background-color: green;
+  background-color: red; /* Change this to your desired styling for completed rows */
+  color: white; /* Optional: change text color if needed */
 }
