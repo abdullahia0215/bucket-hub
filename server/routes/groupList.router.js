@@ -89,8 +89,9 @@ router.post("/join", rejectUnauthenticated, (req, res) => {
     });
 });
 
-router.post("/leave", rejectUnauthenticated, (req, res) => {
-  const { groupId, userId } = req.body;
+router.delete("/leave", rejectUnauthenticated, (req, res) => {
+  const { groupId, userId } = req.query;
+  console.log("leaving group", groupId, "with user", userId);
 
   // Delete the entry from the user_groups table for the specific user and group
   const deleteQuery = "DELETE FROM user_groups WHERE group_id = $1 AND user_id = $2";

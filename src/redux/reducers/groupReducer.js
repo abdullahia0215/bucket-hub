@@ -3,11 +3,6 @@ export const setGroup = (group) => ({
   payload: group
 });
 
-export const joinGroup = (group) => ({
-  type: 'JOIN_GROUP',
-  payload: group
-});
-
 export const unsetGroup = () => ({
   type: 'UNSET_GROUP'
 });

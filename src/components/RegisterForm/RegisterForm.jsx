@@ -14,7 +14,7 @@ function RegisterForm() {
 
   const registerUser = (event) => {
     event.preventDefault();
-    history.push('/myShelf');
+    history.push('/my-bucket');
 
     dispatch({
       type: 'REGISTER',

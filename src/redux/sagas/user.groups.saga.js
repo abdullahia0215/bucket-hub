@@ -10,6 +10,7 @@ function* fetchUserGroup () {
     }
 }
 
+
 export default function* userGroupsSaga() {
     yield takeEvery("FETCH_USER_GROUP", fetchUserGroup);
 }

@@ -11,6 +11,9 @@ export default function ShelfPage() {
   const group = useSelector((state) => state.groupReducer);
   const [hasAccess, setHasAccess] = useState(null);
   const itemList = useSelector((store) => store.itemsReducer);
+  const groupId = group.group?.id || null;
+
+  
 
   const [task, setTask] = useState("");
 
@@ -19,6 +22,7 @@ export default function ShelfPage() {
 
 
   useEffect(() => {
+    
     // Fetch the group shelf items as before
     dispatch({ type: "FETCH_GROUP_SHELF" });
 
@@ -33,7 +37,7 @@ export default function ShelfPage() {
       });
   }, [dispatch]);
 
-  if (hasAccess === null) {
+  if (hasAccess === undefined) {
     return <div>Loading...</div>;
   }
 
@@ -63,31 +67,20 @@ export default function ShelfPage() {
     dispatch({ type: "DELETE_GROUP_ITEM", payload: { id: itemId } });
   };
 
-  const handleLeaveGroup = async () => {
-    // Ensure that group and group.group are both not null before proceeding
-    if (!group || !group.group) {
-      console.error("Group data is not available.");
-      return; // Exit the function early
-    }
+  const handleLeaveGroup = () => {
 
-    const group_id = group.group.id;
 
-    try {
-      // Send the request to the server to leave the group
-      const response = await axios.post("/api/groups/leave", {
-        group_id,
-        userId,
-      });
-
-      // Log the response or handle any post-request logic
-      console.log("Left group successfully:", response.data);
-
-      // If necessary, update your local state or dispatch a Redux action
-      dispatch({ type: "UNSET_GROUP" });
-    } catch (error) {
-      console.error("Error leaving group:", error);
-    }
-  };
+    axios
+        .delete(`/api/groups/leave?groupId=${groupId}&userId=${userId}`)
+        .then(() => {
+            console.log("Group left successfully");
+            // Dispatch UNSET_GROUP action to update the Redux store
+            dispatch({ type: 'UNSET_GROUP' });
+        })
+        .catch((error) => {
+            console.error("Error leaving group:", error);
+        });
+};
 
   return (
     <div className="container">
